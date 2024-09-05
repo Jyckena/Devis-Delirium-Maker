@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcul du devis du Delirium</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        label, input, select, button {
+            margin-bottom: 10px;
+            display: block;
+        }
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calcul du devis du Delirium</h1>
+    
+    <label for="month">Sélectionnez un mois :</label>
+    <select id="month">
+        <option value="0">Janvier</option>
+        <option value="1">Février</option>
+        <option value="2">Mars</option>
+        <option value="3">Avril</option>
+        <option value="4">Mai</option>
+        <option value="5">Juin</option>
+        <option value="6">Juillet</option>
+        <option value="7">Août</option>
+        <option value="8">Septembre</option>
+        <option value="9">Octobre</option>
+        <option value="10">Novembre</option>
+        <option value="11">Décembre</option>
+    </select>
+    
+    <label for="year">Entrez une année :</label>
+    <input type="number" id="year" placeholder="2024" min="1">
+
+    <button onclick="calculateDays()">Calculer</button>
+
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Lundi</th>
+                <th>Mardi</th>
+                <th>Mercredi</th>
+                <th>Jeudi</th>
+                <th>Vendredi</th>
+                <th>Samedi</th>
+                <th>Dimanche</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Prix par jour seul</td>
+                <td>7,80€</td>
+                <td>7,80€</td>
+                <td>9,10€</td>
+                <td>10,40€</td>
+                <td>13,00€</td>
+                <td>13,00€</td>
+                <td>9,10€</td>
+            </tr>
+            <tr>
+                <td>Nombre de jour dans le mois</td>
+                <td id="monday"></td>
+                <td id="tuesday"></td>
+                <td id="wednesday"></td>
+                <td id="thursday"></td>
+                <td id="friday"></td>
+                <td id="saturday"></td>
+                <td id="sunday"></td>
+            </tr>
+            <tr>
+                <td>Somme des prix par jour (en €)</td>
+                <td id="monPrice"></td>
+                <td id="tuePrice"></td>
+                <td id="wedPrice"></td>
+                <td id="thuPrice"></td>
+                <td id="friPrice"></td>
+                <td id="satPrice"></td>
+                <td id="sunPrice"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <tbody>
+            <td>Prix total du mois (en €)</td>
+            <td id="fullMounthPrice"></td>
+        </tbody>
+    </table>
+
+    <script>
+        function calculateDays() {
+            const month = document.getElementById("month").value;
+            const year = document.getElementById("year").value;
+            const daysInWeek = [0, 0, 0, 0, 0, 0, 0];
+            const priceByDay = [7.8, 7.8, 9.1, 10.4, 13, 13, 9.1]; // prix par jour où priceByDay[0] => prix du lundi, etc 
+            const sumPriceByDay = [0, 0, 0, 0, 0, 0, 0]; // somme des prix du moi sur un même jour, sumPriceByDay[0] = lundi
+            let fullMounthPrice = 0.0;
+
+            if (year === "") {
+                alert("Veuillez entrer une année valide.");
+                return;
+            }
+
+            const daysInMonth = new Date(year, parseInt(month) + 1, 0).getDate();
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dayOfWeek = date.getDay(); // 0 = Dimanche, 1 = Lundi, etc.
+                daysInWeek[dayOfWeek === 0 ? 6 : dayOfWeek - 1]++;
+            }
+
+            for (let i = 0; i <= 6; i++) {
+                sumPriceByDay[i] += daysInWeek[i] * priceByDay[i];
+            }
+
+            for (let k = 0; k <= 6; k++) {
+                fullMounthPrice += sumPriceByDay[k];
+            }
+
+            document.getElementById("monPrice").textContent = sumPriceByDay[0];
+            document.getElementById("tuePrice").textContent = sumPriceByDay[1];
+            document.getElementById("wedPrice").textContent = sumPriceByDay[2];
+            document.getElementById("thuPrice").textContent = sumPriceByDay[3];
+            document.getElementById("friPrice").textContent = sumPriceByDay[4];
+            document.getElementById("satPrice").textContent = sumPriceByDay[5];
+            document.getElementById("sunPrice").textContent = sumPriceByDay[6];
+
+            document.getElementById("monday").textContent = daysInWeek[0];
+            document.getElementById("tuesday").textContent = daysInWeek[1];
+            document.getElementById("wednesday").textContent = daysInWeek[2];
+            document.getElementById("thursday").textContent = daysInWeek[3];
+            document.getElementById("friday").textContent = daysInWeek[4];
+            document.getElementById("saturday").textContent = daysInWeek[5];
+            document.getElementById("sunday").textContent = daysInWeek[6];
+
+            document.getElementById("fullMounthPrice").textContent = fullMounthPrice;
+        }
+    </script>
+</body>
+</html>
